@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Ohce
@@ -8,13 +7,9 @@ namespace Ohce
     {
         private readonly string _name;
         private readonly IClock _clock;
-        public bool Stopped { get; private set; }  = false;
+        public bool Stopped { get; private set; }
 
-        public Echo(string name, IClock clock)
-        {
-            _name = name;
-            _clock = clock;
-        }
+        public Echo(string name, IClock clock) => (_name, _clock) = (name, clock);
 
         public string Answer()
         {
@@ -36,24 +31,19 @@ namespace Ohce
         }
         
         
-       private bool TimeBetween(TimeSpan timeSpan, TimeSpan start, TimeSpan end)
-        {
-            if (start < end)
-                return start <= timeSpan && timeSpan <= end;
-            return !(end < timeSpan && timeSpan < start);
-        }
-       
+       private bool TimeBetween(TimeSpan timeSpan, TimeSpan start, TimeSpan end) 
+           => start < end 
+               ? start <= timeSpan && timeSpan <= end 
+               : !(end < timeSpan && timeSpan < start);
+
        public string Reply(string word)
        {
-           if (word == "Stop!")
-           {
-               Stopped = true;
-               return $"Adios {_name}";
-           }
-
-           return word.SequenceEqual(word.Reverse())
-               ? $"{new string(word.Reverse().ToArray())}\n¡Bonita palabra!"
-               : $"{new string(word.Reverse().ToArray())}";
+           if (word != "Stop!")
+               return word.SequenceEqual(word.Reverse())
+                   ? $"{new string(word.Reverse().ToArray())}\n¡Bonita palabra!"
+                   : $"{new string(word.Reverse().ToArray())}";
+           Stopped = true;
+           return $"Adios {_name}";
        }
     }
 }
